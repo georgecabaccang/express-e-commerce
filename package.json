@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon dist/index.js"
+    "server": "tsc && nodemon dist/index.js"
   },
   "author": "",
   "license": "ISC",
