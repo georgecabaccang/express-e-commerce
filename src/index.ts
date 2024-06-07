@@ -1,5 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
+import userRoutes from "./routes/userRoutes";
+
+// installed and imported this separately
+import bodyParser from "body-parser";
 
 const app = express();
 mongoose.connect(
@@ -7,13 +11,17 @@ mongoose.connect(
 );
 
 const db = mongoose.connection;
-db.on("error", (error: Error) => {
+db.on("error", (error) => {
     console.log(error);
 });
 
 db.once("open", () => {
     console.log("Connected to DB");
 });
+
+app.use(bodyParser.json());
+
+app.use("/user", userRoutes);
 
 app.listen(8002, () => {
     console.log("Port 8002");

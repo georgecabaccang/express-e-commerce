@@ -9,7 +9,13 @@ export const createUser = async (request: Request, response: Response) => {
             email: userCredentials.email,
             password: userCredentials.password,
         });
-        response.sendStatus(200);
+
+        const user = await newUser.save();
+        if (user) {
+            response.sendStatus(200);
+        } else {
+            response.sendStatus(500);
+        }
     } catch (error) {
         response.send(error);
     }
