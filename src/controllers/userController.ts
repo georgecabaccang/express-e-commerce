@@ -26,3 +26,20 @@ export const createUser = async (request: Request, response: Response) => {
         response.status(500).send({ status: 500, message: error });
     }
 };
+
+export const loginUser = async (request: Request, response: Response) => {
+    try {
+        const userCredentials = request.body;
+
+        const user = await User.findOne({ email: userCredentials.email });
+
+        if (!user) return response.status(404).send({ status: 404, message: "user_not_found" });
+
+        if (userCredentials.password !== user.password)
+            return response.status(401).send({ status: 401, message: "credentials_mismatch" });
+
+        response.status(200).send({ status: 200, message: "login_success" });
+    } catch (error) {
+        response.status(500).send({ status: 500, message: error });
+    }
+};
