@@ -17,13 +17,20 @@ const userModel_1 = __importDefault(require("../models/userModel"));
 const createUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userCredentials = request.body;
-        console.log(request);
+        const existingUser = yield userModel_1.default.findOne({ email: userCredentials.email });
+        if (existingUser)
+            return response.status(409).send({ status: 409, message: "user_duplication" });
         const newUser = new userModel_1.default({
             email: userCredentials.email,
             password: userCredentials.password,
         });
-        yield newUser.save();
-        response.sendStatus(500);
+        const user = yield newUser.save();
+        if (user) {
+            response.sendStatus(200);
+        }
+        else {
+            response.sendStatus(500);
+        }
     }
     catch (error) {
         response.send(error);
