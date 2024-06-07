@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const cors_1 = __importDefault(require("cors"));
 // installed and imported this separately
 const body_parser_1 = __importDefault(require("body-parser"));
 const app = (0, express_1.default)();
@@ -17,6 +18,7 @@ db.on("error", (error) => {
 db.once("open", () => {
     console.log("Connected to DB");
 });
+app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 app.use("/user", userRoutes_1.default);
 app.listen(8002, () => {

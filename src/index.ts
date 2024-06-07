@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes";
+import cors from "cors";
 
 // installed and imported this separately
 import bodyParser from "body-parser";
@@ -19,6 +20,7 @@ db.once("open", () => {
     console.log("Connected to DB");
 });
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/user", userRoutes);
