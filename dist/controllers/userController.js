@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
+exports.loginUser = exports.createUser = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
 const createUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -26,14 +26,29 @@ const createUser = (request, response) => __awaiter(void 0, void 0, void 0, func
         });
         const user = yield newUser.save();
         if (user) {
-            response.sendStatus(200);
+            response.status(201).send({ status: 201, message: "user_created" });
         }
         else {
-            response.sendStatus(500);
+            response.status(500).send({ status: 500, message: "server_side_error" });
         }
     }
     catch (error) {
-        response.send(error);
+        response.status(500).send({ status: 500, message: error });
     }
 });
 exports.createUser = createUser;
+const loginUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userCredentials = request.body;
+        const user = yield userModel_1.default.findOne({ email: userCredentials.email });
+        if (!user)
+            return response.status(404).send({ status: 404, message: "user_not_found" });
+        if (userCredentials.password !== user.password)
+            return response.status(401).send({ status: 401, message: "credentials_mismatch" });
+        response.status(200).send({ status: 200, message: "login_success" });
+    }
+    catch (error) {
+        response.status(500).send({ status: 500, message: error });
+    }
+});
+exports.loginUser = loginUser;
