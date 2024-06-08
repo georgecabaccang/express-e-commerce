@@ -35,10 +35,15 @@ export const loginUser = async (request: Request, response: Response) => {
 
         if (!user) return response.status(404).send({ status: 404, message: "user_not_found" });
 
+        const foundUser: IUser = user;
         if (userCredentials.password !== user.password)
             return response.status(401).send({ status: 401, message: "credentials_mismatch" });
 
-        response.status(200).send({ status: 200, message: "login_success" });
+        response.status(200).send({
+            status: 200,
+            message: "login_success",
+            data: { _id: foundUser._id, email: foundUser.email },
+        });
     } catch (error) {
         response.status(500).send({ status: 500, message: error });
     }
