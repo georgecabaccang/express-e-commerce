@@ -9,6 +9,7 @@ const userSchema = new Schema(
     {
         email: StringType,
         password: StringType,
+        cartId: { type: Schema.Types.ObjectId, ref: "Cart" },
     },
     {
         timestamps: true,

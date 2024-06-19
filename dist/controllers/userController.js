@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.createUser = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
+const cartModel_1 = __importDefault(require("../models/cartModel"));
 const createUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userCredentials = request.body;
@@ -23,9 +24,19 @@ const createUser = (request, response) => __awaiter(void 0, void 0, void 0, func
         const newUser = new userModel_1.default({
             email: userCredentials.email,
             password: userCredentials.password,
+            cartId: null,
         });
         const user = yield newUser.save();
-        if (user) {
+        const newCart = new cartModel_1.default({
+            ownerId: null,
+            items: [],
+        });
+        const cart = yield newCart.save();
+        user.cartId = cart._id;
+        cart.ownerId = user._id;
+        yield user.save();
+        yield cart.save();
+        if (user && cart) {
             response.status(201).send({ status: 201, message: "user_created" });
         }
         else {
