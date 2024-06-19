@@ -1,9 +1,9 @@
-import { ObjectId } from "mongoose";
+import { Schema } from "mongoose";
 import IItem from "./IItem";
 
 interface ICart {
-    _id?: ObjectId;
-    ownerId: ObjectId;
+    _id?: Schema.Types.ObjectId;
+    ownerId: Schema.Types.ObjectId | null;
     items: IItem[] | [];
 }
 

@@ -1,9 +1,10 @@
-import { Types } from "mongoose";
+import { Schema } from "mongoose";
 
 interface IUser {
-    _id?: Types.ObjectId;
+    _id?: Schema.Types.ObjectId;
     email: String;
     password: String;
+    cartId: Schema.Types.ObjectId | null;
 }
 
 export default IUser;

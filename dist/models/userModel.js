@@ -8,6 +8,7 @@ const StringType = {
 const userSchema = new mongoose_1.Schema({
     email: StringType,
     password: StringType,
+    cartId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Cart" },
 }, {
     timestamps: true,
 });
