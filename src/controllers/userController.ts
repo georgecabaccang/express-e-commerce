@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import * as argon2 from "argon2";
+
 import User from "../models/userModel";
 import Cart from "../models/cartModel";
 
@@ -14,9 +16,11 @@ export const createUser = async (request: Request, response: Response) => {
         if (existingUser)
             return response.status(409).send({ status: 409, message: "user_duplication" });
 
+        const hashedPassowrd = await argon2.hash(userCredentials.password);
+
         const newUser = new User<IUser>({
             email: userCredentials.email,
-            password: userCredentials.password,
+            password: hashedPassowrd,
             cartId: null,
         });
 
@@ -50,14 +54,14 @@ export const loginUser = async (request: Request, response: Response) => {
         const user = request.body.user;
         const password = request.body.password;
 
-        if (user.password !== password)
-            return response.status(401).send({ status: 401, message: "credentials_mismatch" });
-
-        response.status(200).send({
-            status: 200,
-            message: "login_success",
-            data: { _id: user._id, email: user.email },
-        });
+        if (await argon2.verify(user.password, password)) {
+            return response.status(200).send({
+                status: 200,
+                message: "login_success",
+                data: { _id: user._id, email: user.email },
+            });
+        }
+        response.status(401).send({ status: 401, message: "credentials_mismatch" });
     } catch (error) {
         response.status(500).send({ status: 500, message: error });
     }

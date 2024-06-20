@@ -7,6 +7,6 @@ const express_1 = __importDefault(require("express"));
 const userController_1 = require("../controllers/userController");
 const authentication_1 = require("../middlewares/authentication");
 const userRoutes = express_1.default.Router();
-userRoutes.post("/sign-up", authentication_1.authentication, userController_1.createUser);
+userRoutes.post("/sign-up", userController_1.createUser);
 userRoutes.post("/sign-in", authentication_1.authentication, userController_1.loginUser);
 exports.default = userRoutes;
