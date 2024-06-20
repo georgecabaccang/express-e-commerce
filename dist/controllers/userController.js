@@ -50,17 +50,14 @@ const createUser = (request, response) => __awaiter(void 0, void 0, void 0, func
 exports.createUser = createUser;
 const loginUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userCredentials = request.body;
-        const user = yield userModel_1.default.findOne({ email: userCredentials.email });
-        if (!user)
-            return response.status(404).send({ status: 404, message: "user_not_found" });
-        const foundUser = user;
-        if (userCredentials.password !== user.password)
+        const user = request.body.user;
+        const password = request.body.password;
+        if (user.password !== password)
             return response.status(401).send({ status: 401, message: "credentials_mismatch" });
         response.status(200).send({
             status: 200,
             message: "login_success",
-            data: { _id: foundUser._id, email: foundUser.email },
+            data: { _id: user._id, email: user.email },
         });
     }
     catch (error) {
