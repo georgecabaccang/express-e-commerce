@@ -5,6 +5,7 @@ import cors from "cors";
 
 // installed and imported this separately
 import bodyParser from "body-parser";
+import cartRoutes from "./routes/cartRoutes";
 
 const app = express();
 mongoose.connect(
@@ -24,6 +25,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/user", userRoutes);
+app.use("/cart", cartRoutes);
 
 app.listen(8002, () => {
     console.log("Port 8002");
