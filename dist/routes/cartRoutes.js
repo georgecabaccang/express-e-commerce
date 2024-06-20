@@ -7,4 +7,5 @@ const express_1 = __importDefault(require("express"));
 const cartControllers_1 = require("../controllers/cartControllers");
 const cartRoutes = express_1.default.Router();
 cartRoutes.get("/:userId", cartControllers_1.getUserCart);
+cartRoutes.patch("/:userId", cartControllers_1.addToCart);
 exports.default = cartRoutes;
