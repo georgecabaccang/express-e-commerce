@@ -3,7 +3,7 @@ import User from "../models/userModel";
 
 export const authentication = async (request: Request, response: Response, next: NextFunction) => {
     const userId = request.params.userId;
-    const email = request.body.email;
+    const email = request.body.email ? request.body.email : request.params.email;
 
     const user = await User.findOne({ email: email });
 

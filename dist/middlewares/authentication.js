@@ -16,7 +16,7 @@ exports.authentication = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
 const authentication = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = request.params.userId;
-    const email = request.body.email;
+    const email = request.body.email ? request.body.email : request.params.email;
     const user = yield userModel_1.default.findOne({ email: email });
     if (!user) {
         response.status(404).send({ status: 404, message: "user_not_found" });

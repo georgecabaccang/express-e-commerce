@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Cart from "../models/cartModel";
 import IItem from "../interfaces/IItem";
-import ICart from "../interfaces/ICart";
 
 export const getUserCart = async (request: Request, response: Response) => {
     try {
