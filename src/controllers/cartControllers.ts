@@ -23,7 +23,7 @@ export const addToCart = async (request: Request, response: Response) => {
         if (itemIndex > -1) {
             cartItems[itemIndex].quantity = itemDetails.quantity;
         } else {
-            cart.items.push(itemDetails);
+            cartItems.push({ ...itemDetails, addedOn: new Date() });
         }
 
         cart.modifiedOn = new Date();

@@ -32,7 +32,8 @@ const addToCart = (request, response) => __awaiter(void 0, void 0, void 0, funct
             cartItems[itemIndex].quantity = itemDetails.quantity;
         }
         else {
-            cart.items.push(itemDetails);
+            cartItems.push(Object.assign(Object.assign({}, itemDetails), { addedOn: new Date() }));
+            console.log(cartItems);
         }
         cart.modifiedOn = new Date();
         const updatedCart = yield cart.save();

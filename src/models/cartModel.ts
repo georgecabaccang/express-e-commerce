@@ -9,6 +9,7 @@ const cartModel = new Schema(
                 title: String,
                 price: Number,
                 quantity: Number,
+                addedOn: Date,
             },
         ],
         modifiedOn: {
