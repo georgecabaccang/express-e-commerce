@@ -9,6 +9,7 @@ const cartModel = new mongoose_1.Schema({
             title: String,
             price: Number,
             quantity: Number,
+            addedOn: Date,
         },
     ],
     modifiedOn: {
