@@ -24,10 +24,19 @@ const addToCart = (request, response) => __awaiter(void 0, void 0, void 0, funct
     try {
         const itemDetails = request.body;
         const cart = request.body.cart;
-        cart.items.push(itemDetails);
+        const cartItems = cart.items;
+        const itemIndex = cartItems.findIndex((item) => {
+            return item.id === itemDetails.id;
+        });
+        if (itemIndex > -1) {
+            cartItems[itemIndex].quantity = itemDetails.quantity;
+        }
+        else {
+            cart.items.push(itemDetails);
+        }
         cart.modifiedOn = new Date();
-        yield cart.save();
-        response.status(200).send({ status: 204, message: "cart_updated", data: cart });
+        const updatedCart = yield cart.save();
+        response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
     }
     catch (error) {
         response.status(500).send({ status: 500, message: error });

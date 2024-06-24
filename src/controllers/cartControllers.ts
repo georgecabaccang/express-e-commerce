@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import Cart from "../models/cartModel";
 import IItem from "../interfaces/IItem";
 
 export const getUserCart = async (request: Request, response: Response) => {
@@ -15,12 +14,22 @@ export const addToCart = async (request: Request, response: Response) => {
     try {
         const itemDetails = request.body as IItem;
         const cart = request.body.cart;
+        const cartItems = cart.items as IItem[];
 
-        cart.items.push(itemDetails);
+        const itemIndex = cartItems.findIndex((item) => {
+            return item.id === itemDetails.id;
+        });
+
+        if (itemIndex > -1) {
+            cartItems[itemIndex].quantity = itemDetails.quantity;
+        } else {
+            cart.items.push(itemDetails);
+        }
+
         cart.modifiedOn = new Date();
-        await cart.save();
+        const updatedCart = await cart.save();
 
-        response.status(200).send({ status: 204, message: "cart_updated", data: cart });
+        response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
     } catch (error) {
         response.status(500).send({ status: 500, message: error });
     }
