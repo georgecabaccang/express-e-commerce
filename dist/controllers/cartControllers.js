@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeItemQuantity = exports.addToCart = exports.getUserCart = void 0;
+exports.removeFromCart = exports.changeItemQuantity = exports.addToCart = exports.getUserCart = void 0;
 const axios_1 = __importDefault(require("axios"));
 const getUserCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -72,3 +72,24 @@ const changeItemQuantity = (request, response, next) => __awaiter(void 0, void 0
     }
 });
 exports.changeItemQuantity = changeItemQuantity;
+const removeFromCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const itemId = request.params.itemId;
+        const cart = request.body.cart;
+        const cartItems = cart.items;
+        const itemIndex = cartItems.findIndex((item) => {
+            return item.id === +itemId;
+        });
+        if (itemIndex < 0)
+            return response.status(404).send("item_not_found_in_cart");
+        cartItems.splice(itemIndex, 1);
+        cart.modifiedOn = new Date();
+        const updatedCart = yield cart.save();
+        console.log(updatedCart);
+        response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
+    }
+    catch (error) {
+        response.status(500).send({ status: 500, message: error });
+    }
+});
+exports.removeFromCart = removeFromCart;
