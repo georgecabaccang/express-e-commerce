@@ -1,5 +1,10 @@
 import express from "express";
-import { addToCart, changeItemQuantity, getUserCart } from "../controllers/cartControllers";
+import {
+    addToCart,
+    changeItemQuantity,
+    getUserCart,
+    removeFromCart,
+} from "../controllers/cartControllers";
 import { authentication } from "../middlewares/authentication";
 import { getCart } from "../middlewares/getCart";
 
@@ -14,5 +19,6 @@ cartRoutes.patch(
     changeItemQuantity,
     addToCart
 );
+cartRoutes.patch("/:email/:userId/:itemId", authentication, getCart, removeFromCart);
 
 export default cartRoutes;
