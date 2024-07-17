@@ -29,6 +29,11 @@ const addToCart = (request, response) => __awaiter(void 0, void 0, void 0, funct
         const itemDetails = request.body;
         const cart = request.body.cart;
         const cartItems = cart.items;
+        const itemIndex = cartItems.findIndex((item) => {
+            return item.id === itemDetails.id;
+        });
+        if (itemIndex > 0)
+            return;
         const { data } = yield axios_1.default.get(`https://fakestoreapi.com/products/${itemDetails.id}`);
         cartItems.push(Object.assign(Object.assign({}, itemDetails), { price: data.price, addedOn: new Date() }));
         cart.modifiedOn = new Date();
@@ -85,7 +90,6 @@ const removeFromCart = (request, response) => __awaiter(void 0, void 0, void 0, 
         cartItems.splice(itemIndex, 1);
         cart.modifiedOn = new Date();
         const updatedCart = yield cart.save();
-        console.log(updatedCart);
         response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
     }
     catch (error) {
