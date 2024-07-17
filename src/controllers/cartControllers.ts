@@ -17,6 +17,12 @@ export const addToCart = async (request: Request, response: Response) => {
         const cart = request.body.cart;
         const cartItems = cart.items as IItem[];
 
+        const itemIndex = cartItems.findIndex((item) => {
+            return item.id === itemDetails.id;
+        });
+
+        if (itemIndex > 0) return;
+
         const { data }: { data: IItem } = await axios.get(
             `https://fakestoreapi.com/products/${itemDetails.id}`
         );
@@ -84,7 +90,7 @@ export const removeFromCart = async (request: Request, response: Response) => {
         cartItems.splice(itemIndex, 1);
         cart.modifiedOn = new Date();
         const updatedCart = await cart.save();
-        console.log(updatedCart);
+
         response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
     } catch (error) {
         response.status(500).send({ status: 500, message: error });
