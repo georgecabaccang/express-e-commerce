@@ -7,11 +7,12 @@ import {
 } from "../controllers/cartControllers";
 import { authentication } from "../middlewares/authentication";
 import { getCart } from "../middlewares/getCart";
+import { sanitizer } from "../middlewares/sanitizer";
 
 const cartRoutes = express.Router();
 
-cartRoutes.get("/:email/:userId", authentication, getCart, getUserCart);
-cartRoutes.patch("/:email/:userId", authentication, getCart, addToCart);
+cartRoutes.get("/:email/:userId", sanitizer, authentication, getCart, getUserCart);
+cartRoutes.patch("/:email/:userId", sanitizer, authentication, getCart, addToCart);
 cartRoutes.patch(
     "/:email/:userId/:itemId/:quantity",
     authentication,
@@ -19,6 +20,6 @@ cartRoutes.patch(
     changeItemQuantity,
     addToCart
 );
-cartRoutes.patch("/:email/:userId/:itemId", authentication, getCart, removeFromCart);
+cartRoutes.patch("/:email/:userId/:itemId", sanitizer, authentication, getCart, removeFromCart);
 
 export default cartRoutes;
