@@ -21,7 +21,8 @@ export const addToCart = async (request: Request, response: Response) => {
             return item.id === itemDetails.id;
         });
 
-        if (itemIndex > 0) return;
+        if (itemIndex >= 0)
+            return response.status(409).send({ status: 409, message: "item_duplication" });
 
         const { data }: { data: IItem } = await axios.get(
             `https://fakestoreapi.com/products/${itemDetails.id}`
