@@ -13,7 +13,7 @@ const sanitizeString = (string) => {
     // remove white space for good measure
     const strippedString = removeSpaces.trim();
     // sanitize string
-    const cleanString = (0, sanitize_html_1.default)(string);
+    const cleanString = (0, sanitize_html_1.default)(strippedString);
     // retrun sanitized string
     return cleanString;
 };

@@ -6,6 +6,7 @@ import cors from "cors";
 // installed and imported this separately
 import bodyParser from "body-parser";
 import cartRoutes from "./routes/cartRoutes";
+import { sanitizer } from "./middlewares/sanitizer";
 
 const app = express();
 mongoose.connect(
@@ -24,6 +25,7 @@ db.once("open", () => {
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use(sanitizer);
 app.use("/user", userRoutes);
 app.use("/cart", cartRoutes);
 

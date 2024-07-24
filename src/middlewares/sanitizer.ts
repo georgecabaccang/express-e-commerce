@@ -12,7 +12,7 @@ const sanitizeString = <K>(string: string): string => {
     const strippedString = removeSpaces.trim();
 
     // sanitize string
-    const cleanString = sanitizeHtml(string);
+    const cleanString = sanitizeHtml(strippedString);
 
     // retrun sanitized string
     return cleanString;
