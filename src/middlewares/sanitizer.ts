@@ -1,22 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import sanitizeHtml from "sanitize-html";
-
-const sanitizeString = <K>(string: string): string => {
-    // remove line breaks
-    const removeLineBreaks = string.replace(/(\r\n|\n|\r)/gm, "");
-
-    // remove all types of spaces
-    const removeSpaces = removeLineBreaks.replace(/ /g, "").replace(/\s/g, "");
-
-    // remove white space for good measure
-    const strippedString = removeSpaces.trim();
-
-    // sanitize string
-    const cleanString = sanitizeHtml(strippedString);
-
-    // retrun sanitized string
-    return cleanString;
-};
+import sanitizeString from "../helpers/sanitzeString";
 
 export const sanitizer = <T>(request: Request, response: Response, next: NextFunction) => {
     // combine requests parts for complete url request

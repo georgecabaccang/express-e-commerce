@@ -1,5 +1,6 @@
 import * as EmailValidator from "email-validator";
 import { NextFunction, Request, Response } from "express";
+import sanitizeString from "../helpers/sanitzeString";
 
 interface ICilentInput {
     email: string;
@@ -25,12 +26,6 @@ const validateEmailAndPassword = (request: Request, response: Response, next: Ne
         return false;
     }
 
-    // replace angle brackets with the UTF-8 equivalents
-    function replaceAngleBrackets(password: string): string {
-        const cleansedPassword = password.replace("<", "%3C").replace(">", "%3E");
-        return cleansedPassword;
-    }
-
     // check if email is valid, return response of 422 if false
     if (!isValidEmail) {
         return response.status(422).send({ status: 422, message: "invalid_email_format" });
@@ -41,8 +36,8 @@ const validateEmailAndPassword = (request: Request, response: Response, next: Ne
         return response.status(422).send({ status: 422, message: "invalid_password_format" });
     }
 
-    // re-assign cleansed password string
-    clientInput.password = replaceAngleBrackets(clientInput.password);
+    // sanitize and re-assign cleansed password string
+    clientInput.password = sanitizeString(clientInput.password);
     next();
 };
 

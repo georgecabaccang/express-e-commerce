@@ -22,8 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const EmailValidator = __importStar(require("email-validator"));
+const sanitzeString_1 = __importDefault(require("../helpers/sanitzeString"));
 const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?([^\w\s]|[_])).{8,20}$/;
 // checks client email and password are valid when compared to restrictions
 const validateEmailAndPassword = (request, response, next) => {
@@ -39,11 +43,6 @@ const validateEmailAndPassword = (request, response, next) => {
         }
         return false;
     }
-    // replace angle brackets with the UTF-8 equivalents
-    function replaceAngleBrackets(password) {
-        const cleansedPassword = password.replace("<", "%3C").replace(">", "%3E");
-        return cleansedPassword;
-    }
     // check if email is valid, return response of 422 if false
     if (!isValidEmail) {
         return response.status(422).send({ status: 422, message: "invalid_email_format" });
@@ -52,8 +51,8 @@ const validateEmailAndPassword = (request, response, next) => {
     if (!isvalidPassword) {
         return response.status(422).send({ status: 422, message: "invalid_password_format" });
     }
-    // re-assign cleansed password string
-    clientInput.password = replaceAngleBrackets(clientInput.password);
+    // sanitize and re-assign cleansed password string
+    clientInput.password = (0, sanitzeString_1.default)(clientInput.password);
     next();
 };
 exports.default = validateEmailAndPassword;
