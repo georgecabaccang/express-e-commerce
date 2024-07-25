@@ -4,19 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sanitizer = void 0;
-const sanitize_html_1 = __importDefault(require("sanitize-html"));
-const sanitizeString = (string) => {
-    // remove line breaks
-    const removeLineBreaks = string.replace(/(\r\n|\n|\r)/gm, "");
-    // remove all types of spaces
-    const removeSpaces = removeLineBreaks.replace(/ /g, "").replace(/\s/g, "");
-    // remove white space for good measure
-    const strippedString = removeSpaces.trim();
-    // sanitize string
-    const cleanString = (0, sanitize_html_1.default)(strippedString);
-    // retrun sanitized string
-    return cleanString;
-};
+const sanitzeString_1 = __importDefault(require("../helpers/sanitzeString"));
 const sanitizer = (request, response, next) => {
     // combine requests parts for complete url request
     const completeURL = request.protocol + "://" + request.get("host") + request.originalUrl;
@@ -31,7 +19,7 @@ const sanitizer = (request, response, next) => {
             // convert value of property to string
             const objectProperty = `${body[property]}`;
             // sanitize value
-            const cleanedString = sanitizeString(objectProperty);
+            const cleanedString = (0, sanitzeString_1.default)(objectProperty);
             // assign newly sanitized value back to key
             body[property] = cleanedString;
         }
