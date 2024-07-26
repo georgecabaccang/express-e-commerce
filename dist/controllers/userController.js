@@ -39,6 +39,9 @@ exports.loginUser = exports.createUser = void 0;
 const argon2 = __importStar(require("argon2"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const cartModel_1 = __importDefault(require("../models/cartModel"));
+const sessionModel_1 = __importDefault(require("../models/sessionModel"));
+const token_1 = require("../helpers/token");
+const cipher_1 = require("../helpers/cipher");
 const createUser = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userCredentials = request.body;
@@ -78,10 +81,27 @@ const loginUser = (request, response) => __awaiter(void 0, void 0, void 0, funct
         const user = request.body.user;
         const password = request.body.password;
         if (yield argon2.verify(user.password, password)) {
+            // create jwt token
+            const jwtToken = (0, token_1.sign)({ _id: user._id, email: user.email }, process.env.JWT_SECRET, process.env.JWT_EXPIRATION);
+            // create session token
+            const sessionToken = (0, cipher_1.encrypt)(jwtToken);
+            // create new session and save to DB
+            const newSession = new sessionModel_1.default({
+                tokenJ: jwtToken,
+                tokenC: sessionToken,
+            });
+            const savedSession = yield newSession.save();
+            // send a cookie with newSession as data, and add an expiration
+            response.cookie("sessionId", savedSession, {
+                signed: true,
+                httpOnly: true,
+                expires: new Date(Date.now() + +process.env.COOKIE_EXPIRATION),
+                // secure: true, // uncomment for https sites
+            });
             return response.status(200).send({
                 status: 200,
                 message: "login_success",
-                data: { _id: user._id, email: user.email },
+                data: { _id: user._id, email: user.email, token: jwtToken },
             });
         }
         response.status(401).send({ status: 401, message: "credentials_mismatch" });
