@@ -6,6 +6,10 @@ import Cart from "../models/cartModel";
 
 import IUser from "../interfaces/IUser";
 import ICart from "../interfaces/ICart";
+import Session from "../models/sessionModel";
+import ISession from "../interfaces/ISession";
+import { sign } from "../helpers/token";
+import { encrypt } from "../helpers/cipher";
 
 export const createUser = async (request: Request, response: Response) => {
     try {
@@ -55,10 +59,36 @@ export const loginUser = async (request: Request, response: Response) => {
         const password = request.body.password;
 
         if (await argon2.verify(user.password, password)) {
+            // create jwt token
+            const jwtToken = sign(
+                { _id: user._id, email: user.email },
+                process.env.JWT_SECRET!,
+                process.env.JWT_EXPIRATION!
+            );
+
+            // create session token
+            const sessionToken = encrypt(jwtToken);
+
+            // create new session and save to DB
+            const newSession = new Session<ISession>({
+                tokenJ: jwtToken,
+                tokenC: sessionToken,
+            });
+
+            const savedSession = await newSession.save();
+
+            // send a cookie with newSession as data, and add an expiration
+            response.cookie("sessionId", savedSession, {
+                signed: true,
+                httpOnly: true,
+                expires: new Date(Date.now() + +process.env.COOKIE_EXPIRATION!),
+                // secure: true, // uncomment for https sites
+            });
+
             return response.status(200).send({
                 status: 200,
                 message: "login_success",
-                data: { _id: user._id, email: user.email },
+                data: { _id: user._id, email: user.email, token: jwtToken },
             });
         }
         response.status(401).send({ status: 401, message: "credentials_mismatch" });
