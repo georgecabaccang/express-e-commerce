@@ -12,17 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = void 0;
+exports.getProductDetails = exports.getProducts = void 0;
 const productModel_1 = __importDefault(require("../models/productModel"));
 const getProducts = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield productModel_1.default.find();
         if (products.length) {
-            response.status(200).send(products);
+            return response.status(200).send(products);
         }
-        else {
-            response.status(200).send("empty_product_collection");
-        }
+        response.status(200).send("empty_product_collection");
     }
     catch (error) {
         if (error) {
@@ -31,3 +29,19 @@ const getProducts = (request, response) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getProducts = getProducts;
+const getProductDetails = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const productId = request.params.id;
+        const product = yield productModel_1.default.findById(productId);
+        if (product) {
+            return response.status(200).send(product);
+        }
+        response.status(404).send("product_not_found");
+    }
+    catch (error) {
+        if (error) {
+            response.status(500).send("server_error");
+        }
+    }
+});
+exports.getProductDetails = getProductDetails;

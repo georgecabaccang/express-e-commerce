@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import axios from "axios";
 import IItem from "../interfaces/IItem";
+import Product from "../models/productModel";
 
 export const getUserCart = async (request: Request, response: Response) => {
     try {
@@ -13,27 +14,34 @@ export const getUserCart = async (request: Request, response: Response) => {
 
 export const addToCart = async (request: Request, response: Response) => {
     try {
-        const itemDetails = request.body as IItem;
+        const { itemId, quantity } = request.params;
         const cart = request.body.cart;
         const cartItems = cart.items as IItem[];
 
         const itemIndex = cartItems.findIndex((item) => {
-            return item.id === itemDetails.id;
+            return itemId === item._id;
         });
 
         if (itemIndex >= 0)
             return response.status(409).send({ status: 409, message: "item_duplication" });
 
-        const { data }: { data: IItem } = await axios.get(
-            `https://fakestoreapi.com/products/${itemDetails.id}`
-        );
+        const product: IItem | null = await Product.findById(itemId);
 
-        cartItems.push({ ...itemDetails, price: data.price, addedOn: new Date() });
+        if (product) {
+            cartItems.push({
+                _id: product._id,
+                title: product.title,
+                image: product.image,
+                price: product.price,
+                quantity: +quantity,
+                addedOn: new Date(),
+            });
 
-        cart.modifiedOn = new Date();
-        const updatedCart = await cart.save();
+            cart.modifiedOn = new Date();
+            const updatedCart = await cart.save();
 
-        response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
+            response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
+        }
     } catch (error) {
         response.status(500).send({ status: 500, message: error });
     }
@@ -50,7 +58,7 @@ export const changeItemQuantity = async (
         const cartItems = cart.items as IItem[];
 
         const itemIndex = cartItems.findIndex((item) => {
-            return item.id === +itemId;
+            return item._id === itemId;
         });
 
         if (itemIndex < 0) return next();
@@ -83,7 +91,7 @@ export const removeFromCart = async (request: Request, response: Response) => {
         const cartItems = cart.items as IItem[];
 
         const itemIndex = cartItems.findIndex((item) => {
-            return item.id === +itemId;
+            return item._id === itemId;
         });
 
         if (itemIndex < 0) return response.status(404).send("item_not_found_in_cart");
