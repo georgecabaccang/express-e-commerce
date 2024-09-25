@@ -1,8 +1,9 @@
 interface IItem {
-    id: Number;
-    title: String;
-    price: Number;
-    quantity: Number;
+    _id: string;
+    image: string;
+    title: string;
+    price: number;
+    quantity: number;
     addedOn: Date;
 }
 

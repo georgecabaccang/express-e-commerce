@@ -24,6 +24,7 @@ const cartRoutes_1 = __importDefault(require("./routes/cartRoutes"));
 const sanitizer_1 = require("./middlewares/sanitizer");
 const productsGenetor_1 = __importDefault(require("./generators/productsGenetor"));
 const productModel_1 = __importDefault(require("./models/productModel"));
+const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const app = (0, express_1.default)();
 mongoose_1.default.connect(process.env.MONGO_DB);
 const db = mongoose_1.default.connection;
@@ -52,6 +53,7 @@ app.use((0, cookie_parser_1.default)(process.env.COOKIE_SECRET)); // add secret 
 app.use(sanitizer_1.sanitizer);
 app.use("/user", userRoutes_1.default);
 app.use("/cart", cartRoutes_1.default);
+app.use("/products", productRoutes_1.default);
 app.listen(8002, () => {
     console.log("Port 8002");
 });

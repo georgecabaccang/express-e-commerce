@@ -11,6 +11,7 @@ import cartRoutes from "./routes/cartRoutes";
 import { sanitizer } from "./middlewares/sanitizer";
 import productGenertor from "./generators/productsGenetor";
 import Product from "./models/productModel";
+import productRoutes from "./routes/productRoutes";
 
 const app = express();
 mongoose.connect(process.env.MONGO_DB!);
@@ -44,6 +45,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET)); // add secret key here for sig
 app.use(sanitizer);
 app.use("/user", userRoutes);
 app.use("/cart", cartRoutes);
+app.use("/products", productRoutes);
 
 app.listen(8002, () => {
     console.log("Port 8002");

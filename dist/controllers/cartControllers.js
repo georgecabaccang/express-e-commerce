@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.removeFromCart = exports.changeItemQuantity = exports.addToCart = exports.getUserCart = void 0;
-const axios_1 = __importDefault(require("axios"));
+const productModel_1 = __importDefault(require("../models/productModel"));
 const getUserCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cart = request.body.cart;
@@ -26,19 +26,28 @@ const getUserCart = (request, response) => __awaiter(void 0, void 0, void 0, fun
 exports.getUserCart = getUserCart;
 const addToCart = (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const itemDetails = request.body;
+        const { itemId, quantity } = request.params;
         const cart = request.body.cart;
         const cartItems = cart.items;
         const itemIndex = cartItems.findIndex((item) => {
-            return item.id === itemDetails.id;
+            return itemId === item._id;
         });
         if (itemIndex >= 0)
             return response.status(409).send({ status: 409, message: "item_duplication" });
-        const { data } = yield axios_1.default.get(`https://fakestoreapi.com/products/${itemDetails.id}`);
-        cartItems.push(Object.assign(Object.assign({}, itemDetails), { price: data.price, addedOn: new Date() }));
-        cart.modifiedOn = new Date();
-        const updatedCart = yield cart.save();
-        response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
+        const product = yield productModel_1.default.findById(itemId);
+        if (product) {
+            cartItems.push({
+                _id: product._id,
+                title: product.title,
+                image: product.image,
+                price: product.price,
+                quantity: +quantity,
+                addedOn: new Date(),
+            });
+            cart.modifiedOn = new Date();
+            const updatedCart = yield cart.save();
+            response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
+        }
     }
     catch (error) {
         response.status(500).send({ status: 500, message: error });
@@ -51,7 +60,7 @@ const changeItemQuantity = (request, response, next) => __awaiter(void 0, void 0
         const cart = request.body.cart;
         const cartItems = cart.items;
         const itemIndex = cartItems.findIndex((item) => {
-            return item.id === +itemId;
+            return item._id === itemId;
         });
         if (itemIndex < 0)
             return next();
@@ -83,7 +92,7 @@ const removeFromCart = (request, response) => __awaiter(void 0, void 0, void 0, 
         const cart = request.body.cart;
         const cartItems = cart.items;
         const itemIndex = cartItems.findIndex((item) => {
-            return item.id === +itemId;
+            return item._id === itemId;
         });
         if (itemIndex < 0)
             return response.status(404).send("item_not_found_in_cart");
