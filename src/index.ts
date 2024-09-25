@@ -9,6 +9,8 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cartRoutes from "./routes/cartRoutes";
 import { sanitizer } from "./middlewares/sanitizer";
+import productGenertor from "./generators/productsGenetor";
+import Product from "./models/productModel";
 
 const app = express();
 mongoose.connect(process.env.MONGO_DB!);
@@ -21,6 +23,19 @@ db.on("error", (error) => {
 db.once("open", () => {
     console.log("Connected to DB");
 });
+
+// generate documents if needed
+async function generateDocuments() {
+    const count = await Product.countDocuments();
+
+    // check if DB has no or empty products collection
+    if (!count) {
+        await productGenertor(20);
+        return console.log("generated");
+    }
+    console.log("not needed");
+}
+generateDocuments();
 
 app.use(cors());
 app.use(bodyParser.json());

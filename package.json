@@ -21,6 +21,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "lorem-ipsum": "^2.0.8",
     "mongoose": "^8.4.1",
     "sanitize-html": "^2.13.0"
   },

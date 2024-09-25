@@ -13,9 +13,9 @@ const encrypt = (string) => {
     return encrypted;
 };
 exports.encrypt = encrypt;
-const decrypt = (string, algo, key, iv) => {
-    let decipher = crypto_1.default.createDecipheriv(algo, key, iv);
-    let decrypted = decipher.update(string, "hex", "utf-8");
+const decrypt = (string) => {
+    let decipher = crypto_1.default.createDecipheriv(process.env.CIPHER_ALGO, process.env.CIPHER_SECRET, process.env.CIPHER_IV);
+    let decrypted = decipher.update(string, "base64", "utf-8");
     decrypted += decipher.final("utf-8");
     return decrypted;
 };
