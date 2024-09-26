@@ -32,13 +32,13 @@ async function generateDocuments() {
     // check if DB has no or empty products collection
     if (!count) {
         await productGenertor(20);
-        return console.log("generated");
+        return console.log("products generated");
     }
-    console.log("not needed");
+    console.log("product generation not needed");
 }
 generateDocuments();
 
-app.use(cors());
+app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_SECRET)); // add secret key here for signing cookies
 

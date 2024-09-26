@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCart = void 0;
 const cartModel_1 = __importDefault(require("../models/cartModel"));
 const getCart = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const cart = yield cartModel_1.default.findOne({ ownerId: request.params.userId });
+    const cart = yield cartModel_1.default.findOne({ ownerId: request.body.user._id });
     if (!cart)
         return response.status(404).send({ status: 404, message: "cart_not_found" });
     request.body.cart = cart;

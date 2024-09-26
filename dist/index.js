@@ -41,13 +41,13 @@ function generateDocuments() {
         // check if DB has no or empty products collection
         if (!count) {
             yield (0, productsGenetor_1.default)(20);
-            return console.log("generated");
+            return console.log("products generated");
         }
-        console.log("not needed");
+        console.log("product generation not needed");
     });
 }
 generateDocuments();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: process.env.ORIGIN, credentials: true }));
 app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)(process.env.COOKIE_SECRET)); // add secret key here for signing cookies
 app.use(sanitizer_1.sanitizer);

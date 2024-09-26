@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import axios from "axios";
 import IItem from "../interfaces/IItem";
 import Product from "../models/productModel";
 

@@ -1,6 +1,6 @@
 interface ISession {
-    tokenJ: string;
-    tokenC: string;
+    tokenR: string;
+    tokenT: string;
 }
 
 export default ISession;

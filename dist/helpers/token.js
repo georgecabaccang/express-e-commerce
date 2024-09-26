@@ -10,8 +10,8 @@ const sign = (data, key, exp) => {
     return token;
 };
 exports.sign = sign;
-const verify = (token, key, exp) => {
-    const data = jsonwebtoken_1.default.sign(token, key);
+const verify = (token, key) => {
+    const data = jsonwebtoken_1.default.verify(token, key);
     return data;
 };
 exports.verify = verify;
