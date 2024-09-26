@@ -21,26 +21,26 @@ export const addToCart = async (request: Request, response: Response) => {
             return itemId === item._id;
         });
 
-        if (itemIndex >= 0)
-            return response.status(409).send({ status: 409, message: "item_duplication" });
+        if (itemIndex >= 0) {
+            cart[itemIndex].quantity += 1;
+        } else {
+            const product: IItem | null = await Product.findById(itemId);
 
-        const product: IItem | null = await Product.findById(itemId);
-
-        if (product) {
-            cartItems.push({
-                _id: product._id,
-                title: product.title,
-                image: product.image,
-                price: product.price,
-                quantity: +quantity,
-                addedOn: new Date(),
-            });
-
-            cart.modifiedOn = new Date();
-            const updatedCart = await cart.save();
-
-            response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
+            if (product) {
+                cartItems.push({
+                    _id: product._id,
+                    title: product.title,
+                    image: product.image,
+                    price: product.price,
+                    quantity: +quantity,
+                    addedOn: new Date(),
+                });
+            }
         }
+
+        cart.modifiedOn = new Date();
+        const updatedCart = await cart.save();
+        response.status(200).send({ status: 204, message: "cart_updated", data: updatedCart });
     } catch (error) {
         response.status(500).send({ status: 500, message: error });
     }
@@ -62,9 +62,9 @@ export const changeItemQuantity = async (
 
         if (itemIndex < 0) return next();
 
-        if (+quantity < 1) {
+        if (+quantity >= 1) {
             cartItems[itemIndex].quantity = 1;
-        } else if (+quantity > 100) {
+        } else if (+quantity >= 100) {
             cartItems[itemIndex].quantity = 100;
         } else {
             cartItems[itemIndex].quantity = +quantity;
