@@ -1,11 +1,12 @@
 import express from "express";
-import { createUser, loginUser } from "../controllers/userController";
-import { authentication } from "../middlewares/authentication";
+import { createUser, loginUser, logoutUser, refreshTokens } from "../controllers/userController";
 import validateEmailAndPassword from "../middlewares/validateEmailAndPassword";
 
 const userRoutes = express.Router();
 
 userRoutes.post("/sign-up", validateEmailAndPassword, createUser);
-userRoutes.post("/sign-in", authentication, loginUser);
+userRoutes.post("/sign-in", loginUser);
+userRoutes.post("/refresh-tokens", refreshTokens);
+userRoutes.post("/sign-out", logoutUser);
 
 export default userRoutes;
